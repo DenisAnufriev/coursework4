@@ -1,14 +1,8 @@
 from abc import ABC, abstractmethod
 
-
-class AbstractHH(ABC):
+class AbstractApi(ABC):
     """
-    Абстрактный класс для работы с API HeadHunter.
-
-    Атрибуты:
-    ----------
-    file_worker : FileWorker
-        Экземпляр класса FileWorker для работы с файлами.
+    Абстрактный класс для работы с API.
     """
 
     def __init__(self, file_worker):

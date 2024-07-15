@@ -13,7 +13,6 @@ class FileWorker:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
     def read_json(self):
-        # Читаем данные из JSON файла, если он существует
         if not os.path.exists(self.filename):
             return []
         with open(self.filename, 'r', encoding='utf-8') as f:

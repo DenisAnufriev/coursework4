@@ -1,25 +1,24 @@
 import requests
 
 from src.parser import Parser
-from src.abc_hh import AbstractHH
+from src.abc_api import AbstractApi
 
 
-class HH(Parser, AbstractHH):
+class HH(Parser, AbstractApi):
     """
     Класс для работы с API HeadHunter.
 
     Атрибуты:
-    ----------
     url : str
-        URL для запроса вакансий.
+        URL для запроса вакансий
     headers : dict
-        Заголовки запроса.
+        Заголовки запроса
     params : dict
-        Параметры запроса.
+        Параметры запроса
     vacancies : list
-        Список вакансий.
+        Список вакансий
     max_pages : int
-        Максимальное количество страниц для загрузки.
+        Максимальное количество страниц для загрузки
     """
 
     def __init__(self, file_worker, max_pages=20):
@@ -51,17 +50,17 @@ class HH(Parser, AbstractHH):
             self.params['page'] += 1
 
     def save_vacancies(self):
-        # Сохраняет загруженные вакансии в файл
+        # Сохраняем загруженные вакансии в файл
         self.save_data(self.vacancies)
 
     def get_vacancies(self, keyword, salary=None):
-        # Получает вакансии по ключевому слову и зарплате
+        # Получаем вакансии по ключевому слову и зарплате
         self.load_vacancies(keyword)
         filtered_vacancies = self.filter_vacancies(salary)
         return filtered_vacancies if filtered_vacancies else self.vacancies
 
     def filter_vacancies(self, salary=None):
-        # Фильтрует вакансии по указанной зарплате
+        # Фильтруем вакансии по указанной зарплате
         if salary:
             min_salary, max_salary = map(int, salary.split(' - '))
             filtered_vacancies = [vacancy for vacancy in self.vacancies if
@@ -72,7 +71,7 @@ class HH(Parser, AbstractHH):
         return filtered_vacancies
 
     def check_salary(self, vacancy, min_salary, max_salary):
-        # Проверяет соответствие зарплаты вакансии указанному диапазону
+        # Проверяем соответствие зарплаты вакансии указанному диапазону
         salary = vacancy.get('salary')
         if salary is None:
             return False
@@ -89,21 +88,3 @@ class HH(Parser, AbstractHH):
         else:
             return False
 
-
-def format_salary(salary):
-    # Форматирует информацию о зарплате
-    if not salary:
-        return 'Не указана'
-
-    salary_from = salary.get('from')
-    salary_to = salary.get('to')
-    currency = salary.get('currency', 'Не указана')
-
-    if salary_from and salary_to:
-        return f"от {salary_from} до {salary_to} {currency}"
-    elif salary_from:
-        return f"от {salary_from} {currency}"
-    elif salary_to:
-        return f"до {salary_to} {currency}"
-    else:
-        return 'Не указана'
