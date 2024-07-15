@@ -1,10 +1,9 @@
 import requests
 
-from src.parser import Parser
 from src.abc_api import AbstractApi
 
 
-class HH(Parser, AbstractApi):
+class HH(AbstractApi):
     """
     Класс для работы с API HeadHunter.
 
