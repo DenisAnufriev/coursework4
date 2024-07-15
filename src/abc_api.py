@@ -13,10 +13,6 @@ class AbstractApi(ABC):
         # Загружает вакансии по ключевому слову
         pass
 
-    @abstractmethod
-    def save_vacancies(self):
-        # Сохраняет загруженные вакансии в файл
-        pass
 
     @abstractmethod
     def get_vacancies(self, keyword, salary=None):

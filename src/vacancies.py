@@ -1,5 +1,5 @@
 from src.file_worker import FileWorker
-from src.hhru import HH
+from src.parser import HH
 
 class Vacancy:
     def __init__(self, vacancy_data):
@@ -9,18 +9,21 @@ class Vacancy:
         self.url = vacancy_data.get('alternate_url', 'Не указана')
 
     def format_salary(self):
+        if self.salary_info is None:
+            return 'Зарплата не указана'
+
         salary_from = self.salary_info.get('from')
         salary_to = self.salary_info.get('to')
         currency = self.salary_info.get('currency', 'Не указана')
 
-        if salary_from and salary_to:
+        if salary_from is not None and salary_to is not None:
             return f"от {salary_from} до {salary_to} {currency}"
-        elif salary_from:
+        elif salary_from is not None:
             return f"от {salary_from} {currency}"
-        elif salary_to:
+        elif salary_to is not None:
             return f"до {salary_to} {currency}"
         else:
-            return 'Не указана'
+            return 'Зарплата не указана'
 
     def __str__(self):
         return (
@@ -32,11 +35,15 @@ class Vacancy:
         )
 
     def get_max_salary(self):
+        if self.salary_info is None:
+            return 0
         salary_from = self.salary_info.get('from') or 0
         salary_to = self.salary_info.get('to') or 0
         return max(salary_from, salary_to)
 
     def __lt__(self, other):
+        if self.salary_info is None or other.salary_info is None:
+            return False
         return self.get_max_salary() < other.get_max_salary()
 
 
@@ -76,11 +83,12 @@ class Vacancies:
         # сохраняем вакансии
         self.file_worker.write_json([vars(vacancy) for vacancy in self.items])
 
-    def limit_advertisements(self, advertisements):
-        # количество вакансий для вывода
+    def limit_advertisements(self, advertisements=None):
+        # количество вакансий для вывода, сортировка по убыванию зарплаты
         if advertisements:
-            self.items.sort(reverse=True)
-            self.items = self.items[:advertisements]
+            self.items = sorted(self.items, key=lambda x: x.get_max_salary(), reverse=True)[:advertisements]
+        else:
+            self.items.sort(key=lambda x: x.get_max_salary(), reverse=True)
 
     def __str__(self):
         return "\n".join(str(vacancy) for vacancy in self.items)

@@ -48,9 +48,7 @@ class HH(AbstractApi):
             self.vacancies.extend(vacancies)
             self.params['page'] += 1
 
-    def save_vacancies(self):
-        # Сохраняем загруженные вакансии в файл
-        self.save_data(self.vacancies)
+
 
     def get_vacancies(self, keyword, salary=None):
         # Получаем вакансии по ключевому слову и зарплате

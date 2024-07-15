@@ -10,7 +10,13 @@ def main():
     vacancies = Vacancies()
     vacancies.load_vacancies(keyword, salary)
     vacancies.limit_advertisements(advertisements)
-    print(f"Топ {advertisements} вакансий:\n")
+
+
+    if advertisements is None:
+        print(f"Все вакансии:\n")
+    else:
+        print(f"Топ {advertisements} вакансий:\n")
+
     print(vacancies)
 
 if __name__ == "__main__":
