@@ -44,7 +44,6 @@ def test_load_vacancies_success(file_worker):
         return success_response
 
     requests.get = server_get
-
     hh.load_vacancies('Python')
 
     assert hh.params['page'] == 1
@@ -61,7 +60,6 @@ def test_load_vacancies_error(file_worker, capsys):
         return error_response
 
     requests.get = server_get
-
     hh.load_vacancies('Python')
 
     captured = capsys.readouterr()
@@ -70,3 +68,18 @@ def test_load_vacancies_error(file_worker, capsys):
     assert len(hh.vacancies) == 0
 
 
+def test_load_vacancies_items_missing(file_worker, capsys):
+    hh = HH(file_worker=file_worker, max_pages=1)
+
+    error_response = ServerResponse(200, {'other_key': 'value'})
+
+    def server_get(url, headers, params):
+        return error_response
+
+    requests.get = server_get
+    hh.load_vacancies('Python')
+
+    captured = capsys.readouterr()
+    assert "Ошибка: ответ API не содержит ключ 'items'." in captured.out
+    assert hh.params['page'] == 0
+    assert len(hh.vacancies) == 0
