@@ -6,11 +6,15 @@ import requests
 
 
 def test_hh_vacancy1_initialization(hh_vacancy1):
+    assert len(hh_vacancy1.vacancies) == 1
+    assert hh_vacancy1.max_pages == 0
     assert hh_vacancy1.vacancies[0]['name'] == "Программист Python"
     assert hh_vacancy1.vacancies[0]['employer'] == "YATT"
     assert hh_vacancy1.vacancies[0]['url'] == "hh.ru/vacancy/12345"
 
 def test_hh_vacancy2_initialization(hh_vacancy2):
+    assert len(hh_vacancy2.vacancies) == 1
+    assert hh_vacancy2.max_pages == 0
     assert hh_vacancy2.vacancies[0]['name'] == "Программист Java"
     assert hh_vacancy2.vacancies[0]['employer'] == "ATT"
     assert hh_vacancy2.vacancies[0]['url'] == "hh.ru/vacancy/123456"

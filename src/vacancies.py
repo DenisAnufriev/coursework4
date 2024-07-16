@@ -44,7 +44,17 @@ class Vacancy:
     def __lt__(self, other):
         if self.salary_info is None or other.salary_info is None:
             return False
-        return self.get_max_salary() < other.get_max_salary()
+
+        # Сравниваем по минимальной зарплате (если указана) или по максимальной
+        salary_from_self = self.salary_info.get('from', float('inf'))
+        salary_from_other = other.salary_info.get('from', float('inf'))
+        salary_to_self = self.salary_info.get('to', float('inf'))
+        salary_to_other = other.salary_info.get('to', float('inf'))
+
+        min_salary_self = min(salary_from_self, salary_to_self)
+        min_salary_other = min(salary_from_other, salary_to_other)
+
+        return min_salary_self < min_salary_other
 
 
 class Vacancies:
