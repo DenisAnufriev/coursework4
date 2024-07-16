@@ -21,18 +21,18 @@ class HH(AbstractApi):
     """
 
     def __init__(self, file_worker, max_pages=20):
-        self.url = 'https://api.hh.ru/vacancies'
-        self.headers = {'User-Agent': 'HH-User-Agent'}
-        self.params = {'text': '', 'page': 0, 'per_page': 20}
-        self.vacancies = []
-        self.max_pages = max_pages
+        self.__url = 'https://api.hh.ru/vacancies'
+        self.__headers = {'User-Agent': 'HH-User-Agent'}
+        self.__params = {'text': '', 'page': 0, 'per_page': 20}
+        self.__vacancies = []
+        self.__max_pages = max_pages
         super().__init__(file_worker)
 
     def load_vacancies(self, keyword):
         # Загружает вакансии по ключевому слову
-        self.params['text'] = keyword
-        while self.params['page'] < self.max_pages:
-            response = requests.get(self.url, headers=self.headers, params=self.params)
+        self.__params['text'] = keyword
+        while self.__params['page'] < self.__max_pages:
+            response = requests.get(self.__url, headers=self.__headers, params=self.__params)
             if response.status_code != 200:
                 print(f"Ошибка: не удалось загрузить данные. Код состояния: {response.status_code}")
                 break
@@ -45,29 +45,27 @@ class HH(AbstractApi):
             vacancies = data['items']
             if not vacancies:
                 break
-            self.vacancies.extend(vacancies)
-            self.params['page'] += 1
-
-
+            self.__vacancies.extend(vacancies)
+            self.__params['page'] += 1
 
     def get_vacancies(self, keyword, salary=None):
         # Получаем вакансии по ключевому слову и зарплате
         self.load_vacancies(keyword)
-        filtered_vacancies = self.filter_vacancies(salary)
-        return filtered_vacancies if filtered_vacancies else self.vacancies
+        filtered_vacancies = self.__filter_vacancies(salary)
+        return filtered_vacancies if filtered_vacancies else self.__vacancies
 
-    def filter_vacancies(self, salary=None):
+    def __filter_vacancies(self, salary=None):
         # Фильтруем вакансии по указанной зарплате
         if salary:
             min_salary, max_salary = map(int, salary.split(' - '))
-            filtered_vacancies = [vacancy for vacancy in self.vacancies if
-                                  self.check_salary(vacancy, min_salary, max_salary)]
+            filtered_vacancies = [vacancy for vacancy in self.__vacancies if
+                                  self.__check_salary(vacancy, min_salary, max_salary)]
         else:
-            filtered_vacancies = self.vacancies
+            filtered_vacancies = self.__vacancies
 
         return filtered_vacancies
 
-    def check_salary(self, vacancy, min_salary, max_salary):
+    def __check_salary(self, vacancy, min_salary, max_salary):
         # Проверяем соответствие зарплаты вакансии указанному диапазону
         salary = vacancy.get('salary')
         if salary is None:
@@ -84,4 +82,3 @@ class HH(AbstractApi):
             return min_salary <= salary_to <= max_salary
         else:
             return False
-
