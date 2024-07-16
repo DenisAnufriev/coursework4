@@ -1,5 +1,6 @@
 from src.file_worker import FileWorker
 from src.parser import HH
+from src.abc_methods import MethodsAbc
 
 class Vacancy:
     def __init__(self, vacancy_data):
@@ -57,7 +58,7 @@ class Vacancy:
         return min_salary_self < min_salary_other
 
 
-class Vacancies:
+class Vacancies(MethodsAbc):
     """
     Класс для работы с вакансиями.
 
@@ -99,6 +100,9 @@ class Vacancies:
             self.items = sorted(self.items, key=lambda x: x.get_max_salary(), reverse=True)[:advertisements]
         else:
             self.items.sort(key=lambda x: x.get_max_salary(), reverse=True)
+
+    def del_files(self):
+        pass
 
     def __str__(self):
         return "\n".join(str(vacancy) for vacancy in self.items)
