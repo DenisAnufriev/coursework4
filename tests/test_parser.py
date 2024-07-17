@@ -6,19 +6,19 @@ import requests
 
 
 def test_hh_vacancy1_initialization(hh_vacancy1):
-    assert len(hh_vacancy1.vacancies) == 1
-    assert hh_vacancy1.max_pages == 0
-    assert hh_vacancy1.vacancies[0]['name'] == "Программист Python"
-    assert hh_vacancy1.vacancies[0]['employer'] == "YATT"
-    assert hh_vacancy1.vacancies[0]['url'] == "hh.ru/vacancy/12345"
+    assert len(hh_vacancy1._HH__vacancies) == 1
+    assert hh_vacancy1._HH__max_pages == 0
+    assert hh_vacancy1._HH__vacancies[0]['name'] == "Программист Python"
+    assert hh_vacancy1._HH__vacancies[0]['employer'] == "YATT"
+    assert hh_vacancy1._HH__vacancies[0]['url'] == "hh.ru/vacancy/12345"
 
 def test_hh_vacancy2_initialization(hh_vacancy2):
-    assert len(hh_vacancy2.vacancies) == 1
-    assert hh_vacancy2.max_pages == 0
-    assert hh_vacancy2.vacancies[0]['name'] == "Программист Java"
-    assert hh_vacancy2.vacancies[0]['employer'] == "ATT"
-    assert hh_vacancy2.vacancies[0]['url'] == "hh.ru/vacancy/123456"
-    assert hh_vacancy2.params['page'] == 1
+    assert len(hh_vacancy2._HH__vacancies) == 1
+    assert hh_vacancy2._HH__max_pages == 0
+    assert hh_vacancy2._HH__vacancies[0]['name'] == "Программист Java"
+    assert hh_vacancy2._HH__vacancies[0]['employer'] == "ATT"
+    assert hh_vacancy2._HH__vacancies[0]['url'] == "hh.ru/vacancy/123456"
+    assert hh_vacancy2._HH__params['page'] == 1
 
 class ServerResponse:
     def __init__(self, status_code, json_data=None):
@@ -50,9 +50,9 @@ def test_load_vacancies_success(file_worker):
     requests.get = server_get
     hh.load_vacancies('Python')
 
-    assert hh.params['page'] == 1
-    assert len(hh.vacancies) == 1
-    assert hh.vacancies[0]['name'] == "Программист Python"
+    assert hh._HH__params['page'] == 1
+    assert len(hh._HH__vacancies) == 1
+    assert hh._HH__vacancies[0]['name'] == "Программист Python"
 
 
 def test_load_vacancies_error(file_worker, capsys):
@@ -68,8 +68,8 @@ def test_load_vacancies_error(file_worker, capsys):
 
     captured = capsys.readouterr()
     assert "Ошибка: не удалось загрузить данные. Код состояния: 500" in captured.out
-    assert hh.params['page'] == 0
-    assert len(hh.vacancies) == 0
+    assert hh._HH__params['page'] == 0
+    assert len(hh._HH__vacancies) == 0
 
 
 def test_load_vacancies_items_missing(file_worker, capsys):
@@ -85,5 +85,5 @@ def test_load_vacancies_items_missing(file_worker, capsys):
 
     captured = capsys.readouterr()
     assert "Ошибка: ответ API не содержит ключ 'items'." in captured.out
-    assert hh.params['page'] == 0
-    assert len(hh.vacancies) == 0
+    assert hh._HH__params['page'] == 0
+    assert len(hh._HH__vacancies) == 0
