@@ -9,7 +9,7 @@ def file_worker():
 @pytest.fixture
 def hh_vacancy1(file_worker):
     hh = HH(file_worker=file_worker, max_pages=0)
-    hh.vacancies = [{
+    hh._HH__vacancies = [{
         "name": "Программист Python",
         "employer": "YATT",
         "salary_info": {
@@ -25,8 +25,8 @@ def hh_vacancy1(file_worker):
 @pytest.fixture
 def hh_vacancy2(file_worker):
     hh = HH(file_worker=file_worker, max_pages=0)
-    hh.params['page'] = 1
-    hh.vacancies = [{
+    hh._HH__params['page'] = 1
+    hh._HH__vacancies = [{
         "name": "Программист Java",
         "employer": "ATT",
         "salary_info": {
